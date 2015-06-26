@@ -201,6 +201,30 @@ void serial_readwrite_task(void *pvParameters)
 	}
 }
 
+void my_a_task(void *pvParameters)
+{
+	int a = 1;
+
+	while(1) {
+		if(a < 2)
+			a++;
+		else
+			a--;
+	}
+}
+
+void my_b_task(void *pvParameters)
+{
+	int b = 3;
+
+	while(1) {
+		if(b != 3)
+			b*=3;
+		else
+			b/=3;
+	}
+}
+
 int main()
 {
 	logfile = open("log", 4);
@@ -245,6 +269,16 @@ int main()
 	 * them back to the RS232 port. */
 	xTaskCreate(serial_readwrite_task,
 	            (signed portCHAR *) "Serial Read/Write",
+	            512 /* stack size */, NULL,
+	            tskIDLE_PRIORITY + 10, NULL);
+
+	xTaskCreate(my_a_task,
+	            (signed portCHAR *) "My A Task",
+	            512 /* stack size */, NULL,
+	            tskIDLE_PRIORITY + 10, NULL);
+
+	xTaskCreate(my_b_task,
+	            (signed portCHAR *) "My B Task",
 	            512 /* stack size */, NULL,
 	            tskIDLE_PRIORITY + 10, NULL);
 
